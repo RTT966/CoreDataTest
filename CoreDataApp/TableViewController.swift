@@ -16,18 +16,7 @@ class TableViewController: UITableViewController {
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = self.editButtonItem
         
-        let context = giveContext()
-        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-        if let objects = try? context.fetch(fetchRequest){
-            for object in objects{
-                context.delete(object)
-            }
-        }
-        do {
-            try context.save()
-        } catch let error as NSError{
-            print(error.localizedDescription)
-        }
+        
     }
     
     @IBAction func addNewTask(_ sender: UIBarButtonItem) {
@@ -115,6 +104,15 @@ class TableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            let context = giveContext()
+             let object = data[indexPath.row]
+                context.delete(object)
+        
+        do {
+            try context.save()
+        } catch let error as NSError{
+            print(error.localizedDescription)
+        }
             tasks.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
